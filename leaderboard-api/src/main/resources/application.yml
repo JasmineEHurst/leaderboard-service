@@ -1,0 +1,30 @@
+# In a real scenario I would secure all sensitive data
+# such as passwords, tokens, etc
+# There would also be a properties file for each environment
+# instead of just one
+server:
+  port: 8088
+
+leaderboard-backend:
+  host: localhost
+  port: 8081
+  scheme: https
+  submitEventPath: /submitLeaderboardEvent
+  getLeaderboardPath: /getLeaderboards
+  getRanksByLeaderboardPath: /getRanksByLeaderboard
+
+logging:
+  level:
+    org:
+      springframework:
+        web:
+          servlet:
+            mvc:
+              method:
+                annotation: TRACE
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

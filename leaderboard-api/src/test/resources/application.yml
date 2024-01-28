@@ -1,0 +1,10 @@
+server:
+  port: 8088
+
+leaderboard-backend:
+  host: localhost
+  port: 8081
+  scheme: https
+  submitEventPath: /submitLeaderboardEvent
+  getLeaderboardPath: /getLeaderboards
+  getRanksByLeaderboardPath: /getRanksByLeaderboard
