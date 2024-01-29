@@ -55,7 +55,7 @@ Services Overview
 
 * Provides quick access and has structures would could be useful for structuring rankings
 
-**Flink**: Consumes events messages and performs computation based on leaderboard criteria. If the criteria are met, sends messages to another pubsub topic to update rankings
+**Flink**: Consumes event messages and performs computation based on leaderboard criteria. Can also enrich the data/ETL for other purposes (ex: integrating with other game services, analytics)
 
 * Flink is able to save the state via checkpoints + savepoints in case of failure allowing for recovery of up-to-date leaderboard rankings
 
