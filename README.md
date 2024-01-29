@@ -22,20 +22,21 @@ Non-functional:
 * Low latency
 
 High Level Design
---------------------------
+-----------------
 
-* Host on the cloud for on-demand scaling capabilities. Ex: Compute Engine (GCP), EC2 (AWS)
+* Host on public cloud for on-demand scaling capabilities. Ex: Compute Engine (GCP), EC2 (AWS)
 * Public facing APIs that are behind Gateway for authentication, versioning, rate limiting with Open API specification
 * Plan to support web and game clients with HTTP/JSON and HTTP/protobuf endpoints
 * Microservice and event-driven architecture. Dockerize the services for platform agnosticity
 * Infrastructure as code via Ex: Terraform (platform agnostic), Cloud Deplopyment Manager (GCP), AWS Cloud formation (AWS)
 
 Component Diagram
----
-![LeaderboardComponentDiagram.png](..%2F..%2FDownloads%2FLeaderboardComponentDiagram.png)
+-----------------
+
+![LeaderboardComponentDiagram.png](images/LeaderboardComponentDiagram.png)
 
 Services Overview
---------
+-----------------
 
 **Leaderboard Service**: A microservice that exposes a public-facing API for interacting with the Leaderboard system. Can be seen as a proxy service.
 
@@ -69,7 +70,7 @@ Services Overview
 * Could be replaced with DynamoDB or Datastore if using AWS/GCP
 
 API Definitions
----
+---------------
 
 **Base URL**: https://{api-gateway-hostname}/leaderboards/v1/
 
@@ -79,8 +80,9 @@ API Definitions
 
 **Resource**: _Leaderboards_: Displays the ranking of players in a competitive event
 
+
 | Method | Accept | Content-type | Path/Endpoint                 | Request Parameters                                                       | Response (data type:field name)                                                         |
-|--------|--------|--------------|-------------------------------|--------------------------------------------------------------------------|-----------------------------------------------------------------------------------------|
+| ------ | ------ | ------------ | ----------------------------- | ------------------------------------------------------------------------ | --------------------------------------------------------------------------------------- |
 | GET    |        | JSON         | /leaderboards                 |                                                                          | array< object >: leaderboards                                                           |
 | GET    |        | JSON         | /leaderboards/{leaderboardId} | Query Params<br/> string: leaderboardId                                  | string: leaderboardId<br/>string: name<br/>string: createdAt<br/>array< object >: ranks |
 | POST   | JSON   | JSON         | /leaderboards                 | Request Body<br/>string: titleId<br/>string: name<br/>boolean: orderDesc | string: leaderboardId                                                                   |
@@ -126,14 +128,16 @@ Example Response:
 
 **Resource** - _Ranks_: An individual entry consisting of an entity’s placement on a leaderboard based on a set condition
 
+
 | Method | Accept | Content-type | Path/Endpoint                                           | Request Parameters                                          | Response (data type:field name)                                                                                                                    |
-|--------|--------|--------------|---------------------------------------------------------|-------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------|
+| ------ | ------ | ------------ | ------------------------------------------------------- | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | GET    |        | JSON         | /leaderboards/{leaderboardId}/ranks                     | Query Params<br/>string: leaderboardId                      | array< object >: ranks                                                                                                                             |
 | GET    |        | JSON         | /leaderboards/{leaderboardId}/ranks/entities/{entityId} | Query Params<br/>string: leaderboardId<br/>string: entityId | string: leaderboardId<br/>string: entityId<br/>string: name<br/>string: leaderboardId<br/>number: position<br/>number: score<br/>string: timestamp |
 
 Example:
 
 Get an entity's rank in a leaderboard
+
 ```
 Endpoint: GET /leaderboards/{leaderboardId}/ranks/entities/{entityId}
 
@@ -151,10 +155,12 @@ Example Response:
     "timestamp":"2023-08-10T13:15:60.286Z"  
 }
 ```
+
 **Resource** - _Events_: A submission of an entity’s score, which could cause an update to a leaderboard
 
+
 | Method | Accept | Content-type | Path/Endpoint | Request Parameters                                                                                  | Response (data type:field name) |
-|--------|--------|--------------|---------------|-----------------------------------------------------------------------------------------------------|---------------------------------|
+| ------ | ------ | ------------ | ------------- | --------------------------------------------------------------------------------------------------- | ------------------------------- |
 | POST   | JSON   | JSON         | /events       | Query Params<br/>string: leaderboardId<br/>string: entityId<br/>number: score<br/>string: timestamp | empty                           |
 
 Example:
@@ -172,31 +178,52 @@ Example Response:
 {}
 ```
 
+Observability
+----------
+* New Relic and Splunk would both have the observability capabilities desired such as monitoring, alerting, and logging. 
+What could make or break the decision between the two could be how much customization is allowed or the ease of use.
+* Public cloud: GCP and AWS offer monitoring, alerting, and logging options that would be easy to integrate if the system was deployed there.
+
+Security
+----------
+* Authentication/Authorization: OAuth 2.0 + OpenId connect
+  * Do not allow web clients to access write APIs unless using client credentials
+* If on the cloud utilize IAM roles and service accounts
+* Run security scans to check for vulnerabilities. Update and patch regularly
+* DDoS protections (ex: Google Cloud Armor)
+
 Challenges
----
+----------
+
 **Error handling**
+
 * What information should be shown to the clients when there are downstream errors with the Leaderboard system? Show too much and the system becomes more vulnerable to malicious actors.
-Show too little and client won't know how to act on the error. 
+  Show too little and client won't know how to act on the error.
 * How should errors propagated to the clients in terms of structure
 
 **API Design**
+
 * Creating endpoints with nested resources vs adding more query parameters
 
 **Leaderboard Service to Leaderboard Backend communication**
+
 * What would be the API contract of the Leaderboard Backend?
 * What would be the Leaderboard Backend methods of transport?
 
 **Caching**
+
 * What should be cached if anything?
 * Best method for dealing with inconsistency
 
 Future work
----
+-----------
+
 Expand requirements
+
 * ex: Allow for clients to specify more unique conditions for ranking order for a leaderboard
 
 Batch events API
 
 Support Protobuf data format
 
-Switch to reactive programming style 
+Switch to reactive programming style
