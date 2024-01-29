@@ -21,16 +21,20 @@ Non-functional:
 * Availability
 * Low latency
 
-Summary of proposed design
+High Level Design
 --------------------------
 
 * Host on the cloud for on-demand scaling capabilities. Ex: Compute Engine (GCP), EC2 (AWS)
 * Public facing APIs that are behind Gateway for authentication, versioning, rate limiting with Open API specification
 * Plan to support web and game clients with HTTP/JSON and HTTP/protobuf endpoints
 * Microservice and event-driven architecture. Dockerize the services for platform agnosticity
-* Infrastructure as code
+* Infrastructure as code via Ex: Terraform (platform agnostic), Cloud Deplopyment Manager (GCP), AWS Cloud formation (AWS)
 
-Services
+Component Diagram
+---
+![LeaderboardComponentDiagram.png](..%2F..%2FDownloads%2FLeaderboardComponentDiagram.png)
+
+Services Overview
 --------
 
 **Leaderboard Service**: A microservice that exposes a public-facing API for interacting with the Leaderboard system. Can be seen as a proxy service.
@@ -88,10 +92,10 @@ Get a leaderboard
 ```
 Endpoint: GET /leaderboards/{leaderboardId}
 
-Request: 
+Example Request: 
 curl http://localhost:8088/leaderboards/1
 
-Response:
+Example Response:
 200 OK
 {
     "leaderboardId":"leaderboard1",
@@ -133,10 +137,10 @@ Get an entity's rank in a leaderboard
 ```
 Endpoint: GET /leaderboards/{leaderboardId}/ranks/entities/{entityId}
 
-Request: 
+Example Request: 
 curl http://localhost:8088/leaderboards/1/ranks/entities/1
 
-Response:
+Example Response:
 200 OK
 {
     "leaderboardId":"gameleaderboard1",
@@ -160,10 +164,10 @@ Submit score to the leaderboard for an entity
 ```
 Endpoint: POST /events
 
-Request: 
+Example Request: 
 curl -X POST http://localhost:8088/events -H "Content-Type: application/json" -d '{"leaderboardId":"leaderboard1", "entityId":"myentity3","score": 467 ,"timestamp":"2023-04-23T18:25:43.511Z"}' 
 
-Response:
+Example Response:
 201 Created 
 {}
 ```
@@ -171,20 +175,20 @@ Response:
 Challenges
 ---
 **Error handling**
-Exceptions
+* What information should be shown to the clients when there are downstream errors with the Leaderboard system? Show too much and the system becomes more vulnerable to malicious actors.
+Show too little and client won't know how to act on the error. 
+* How should errors propagated to the clients in terms of structure
 
 **API Design**
-Nested resources
-* A rank belongs to a leaderboard
-Architectural style
+* Creating endpoints with nested resources vs adding more query parameters
 
-**Downstream service**
-What would be its API contract?
-What would its methods of transport be?
+**Leaderboard Service to Leaderboard Backend communication**
+* What would be the API contract of the Leaderboard Backend?
+* What would be the Leaderboard Backend methods of transport?
 
 **Caching**
-What should be cached?
-Best method for dealing with inconsistency (I’m thinking go with write-behind strategy)
+* What should be cached if anything?
+* Best method for dealing with inconsistency
 
 Future work
 ---
