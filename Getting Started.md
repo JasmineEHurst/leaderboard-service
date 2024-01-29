@@ -24,4 +24,17 @@ Example run configuration:
 
 Try it out
 ---
-Currently the
+The following endpoints currently returned mocked data as a sample response:
+* /leaderboards
+
+In a command line run:
+```
+curl localhost:8088/leaderboards
+```
+
+* leaderboards/{leaderboardId}/ranks/entities/{entityId}
+
+In a command line run:
+```
+curl localhost:8088/leaderboards/112/ranks/entities/5
+```

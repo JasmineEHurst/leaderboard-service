@@ -1,7 +1,6 @@
 package org.gameservice.leaderboard.exception;
 
 import jakarta.servlet.http.HttpServletResponse;
-import org.gameservice.leaderboard.exception.LeaderboardServiceException;
 import org.gameservice.leaderboard.model.ApiErrorResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -23,7 +22,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler
     public void handleOtherException(Exception exception,
                                                   ServletWebRequest request) throws IOException {
-
+        // Log the error and record a metric
         request.getResponse().sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, INTERNAL_SERVICE_ERROR_MESSAGE);
 
     }

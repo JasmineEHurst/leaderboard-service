@@ -178,6 +178,10 @@ Example Response:
 {}
 ```
 
+**TODO**
+* APIs for entity management (entity meaning a player, team, etc)
+
+
 Observability
 ----------
 * New Relic and Splunk would both have the observability capabilities desired such as monitoring, alerting, and logging. 
@@ -218,12 +222,6 @@ Challenges
 Future work
 -----------
 
-Expand requirements
-
-* ex: Allow for clients to specify more unique conditions for ranking order for a leaderboard
-
-Batch events API
-
-Support Protobuf data format
-
-Switch to reactive programming style
+* Expand requirements
+  * ex: Allow for clients to specify more unique conditions for ranking order for a leaderboard
+  * ex: Allow batching events
